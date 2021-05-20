@@ -64,6 +64,7 @@
 									<form:input class="form-control" path="captcha" placeholder="Enter Captcha" required="true"/>
 								</div>
 							</div>
+							<form:input type="hidden" path="captchaKey" value="${captchaKey}" required="true"/>
 							<div class="form-group">
 								<div class="col-md-12" align="right">
 									<a href="/list" class="btn btn-default btn-xs">

@@ -1,20 +1,31 @@
 package com.mightyjava.captcha;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import cn.apiclub.captcha.Captcha;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
 
+import java.io.*;
 import javax.imageio.ImageIO;
 import javax.xml.bind.DatatypeConverter;
 
-import nl.captcha.Captcha;
+@Service
+public class CaptchaUtils {
 
-public abstract class CaptchaUtils {
+	private final BCryptPasswordEncoder encoder;
 
-	public static String encodeBase64(Captcha captcha) {
+	@Autowired
+	public CaptchaUtils(BCryptPasswordEncoder encoder) {
+		this.encoder = encoder;
+	}
+
+	public String encodeBase64(Captcha captcha) {
 		try {
 			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 			ImageIO.write(captcha.getImage(), "png", outputStream);
-			return DatatypeConverter.printBase64Binary(outputStream.toByteArray());
+			String data = DatatypeConverter.printBase64Binary(outputStream.toByteArray());
+			outputStream.close();
+			return data;
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

@@ -5,7 +5,7 @@ import java.util.Set;
 
 import org.springframework.stereotype.Service;
 
-import com.mightyjava.modal.Employee;
+import com.mightyjava.model.Employee;
 import com.mightyjava.service.EmployeeService;
 
 @Service

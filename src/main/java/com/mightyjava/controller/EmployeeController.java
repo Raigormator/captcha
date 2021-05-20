@@ -3,6 +3,13 @@ package com.mightyjava.controller;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import cn.apiclub.captcha.Captcha;
+import com.mightyjava.exception.CaptchaException;
+import com.mightyjava.model.dto.CaptchaDetailDto;
+import com.mightyjava.service.CaptchaDetailService;
+import com.mightyjava.service.CaptchaValidator;
+import com.mightyjava.service.impl.CaptchaDetailServiceImpl;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,35 +19,46 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import com.mightyjava.captcha.CaptchaGenerator;
 import com.mightyjava.captcha.CaptchaUtils;
-import com.mightyjava.modal.Employee;
+import com.mightyjava.model.Employee;
 import com.mightyjava.service.EmployeeService;
-
-import nl.captcha.Captcha;
 
 @Controller
 public class EmployeeController {
+
+	private static final Logger LOG = Logger.getLogger(EmployeeController.class);
+
 	private String message;
+	private final EmployeeService employeeService;
+	private CaptchaValidator captchaValidator;
+	private CaptchaDetailService captchaDetailService;
+
 	@Autowired
-	private EmployeeService employeeService;
-	@Autowired
-	private CaptchaGenerator captchaGenerator;
+	public EmployeeController(EmployeeService employeeService, CaptchaValidator captchaValidator,
+							  CaptchaDetailService captchaDetailService) {
+		this.employeeService = employeeService;
+		this.captchaValidator = captchaValidator;
+		this.captchaDetailService = captchaDetailService;
+	}
 	
 	@GetMapping("/")
 	public String add(Model model, HttpSession httpSession) {
 		model.addAttribute("message", message);
 		model.addAttribute("employee", new Employee());
-		Captcha captcha = captchaGenerator.createCaptcha(200, 50);
-		httpSession.setAttribute("captcha", captcha.getAnswer());
-		model.addAttribute("captchaEncode", CaptchaUtils.encodeBase64(captcha));
+		CaptchaDetailDto captcha = captchaDetailService.create();
+		model.addAttribute("captchaEncode", captcha.getCaptchaImage());
+		model.addAttribute("captchaKey", captcha.getCaptchaKey());
 		return "add";
 	}
 	
 	@PostMapping("/save")
 	public String save(@ModelAttribute("employee") Employee employee, HttpServletRequest request) {
-		if(employee.getCaptcha().equals(request.getSession().getAttribute("captcha"))) {
+		LOG.info("Captcha Answer 2: " + employee.getCaptcha());
+		LOG.info("Captcha Key     : " + employee.getCaptchaKey());
+		try {
+			captchaValidator.validate(employee.getCaptcha(), employee.getCaptchaKey());
 			employeeService.add(employee);
 			return "redirect:/list";
-		} else {
+		} catch (CaptchaException ce) {
 			message = "Please verify captcha";
 			return "redirect:/";
 		}

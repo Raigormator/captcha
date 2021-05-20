@@ -2,7 +2,7 @@ package com.mightyjava.service;
 
 import java.util.Set;
 
-import com.mightyjava.modal.Employee;
+import com.mightyjava.model.Employee;
 
 public interface EmployeeService {
 	void add(Employee employee);
