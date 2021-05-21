@@ -1,10 +1,12 @@
 package com.mightyjava.model;
 
+import com.mightyjava.captcha.LocalDateTimeConverter;
+
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "CAPTCHA_DETAIL", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"CAPTCHA_CODE"}),
         @UniqueConstraint(columnNames = {"CAPTCHA_KEY"})
 })
 public class CaptchaDetail {
@@ -19,6 +21,10 @@ public class CaptchaDetail {
 
     @Column(name = "CAPTCHA_KEY", nullable = false)
     private String captchaKey;
+
+    @Column(name = "CREATED_DATE", nullable = false)
+    @Convert(converter = LocalDateTimeConverter.class)
+    private LocalDateTime createdDate;
 
     public Long getId() {
         return id;
@@ -44,8 +50,21 @@ public class CaptchaDetail {
         this.captchaKey = captchaKey;
     }
 
+    public LocalDateTime getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(LocalDateTime createdDate) {
+        this.createdDate = createdDate;
+    }
+
     @Override
     public String toString() {
-        return "{\nid: " + id + ",\ncaptchaCode: " + captchaCode + ",\ncaptchaKey:" + captchaKey + "\n}";
+        return "{\n" +
+                "id: " + id + ",\n" +
+                "captchaCode: " + captchaCode + ",\n" +
+                "captchaKey:" + captchaKey + "\n" +
+                "createdDate:" + createdDate + "\n" +
+                "}";
     }
 }

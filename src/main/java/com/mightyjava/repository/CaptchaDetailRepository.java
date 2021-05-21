@@ -9,4 +9,5 @@ public interface CaptchaDetailRepository extends JpaRepository<CaptchaDetail, Lo
 
     CaptchaDetail findByCaptchaKey(String key);
 
+    void deleteByCaptchaKey(String key);
 }

@@ -1,18 +1,20 @@
 package com.mightyjava.model.dto;
 
-import javax.persistence.Column;
+import java.time.LocalDateTime;
 
 public class CaptchaDetailDto {
 
     private String captchaCode;
     private String captchaKey;
     private String captchaImage;
+    private LocalDateTime createdDate;
 
     public CaptchaDetailDto() {}
 
-    public CaptchaDetailDto(String captchaCode, String captchaKey) {
+    public CaptchaDetailDto(String captchaCode, String captchaKey, LocalDateTime createdDate) {
         this.captchaCode = captchaCode;
         this.captchaKey = captchaKey;
+        this.createdDate = createdDate;
     }
 
     public String getCaptchaCode() {
@@ -37,6 +39,14 @@ public class CaptchaDetailDto {
 
     public void setCaptchaImage(String captchaImage) {
         this.captchaImage = captchaImage;
+    }
+
+    public LocalDateTime getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(LocalDateTime createdDate) {
+        this.createdDate = createdDate;
     }
 
     @Override

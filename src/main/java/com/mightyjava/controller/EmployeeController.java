@@ -3,12 +3,10 @@ package com.mightyjava.controller;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import cn.apiclub.captcha.Captcha;
 import com.mightyjava.exception.CaptchaException;
 import com.mightyjava.model.dto.CaptchaDetailDto;
 import com.mightyjava.service.CaptchaDetailService;
 import com.mightyjava.service.CaptchaValidator;
-import com.mightyjava.service.impl.CaptchaDetailServiceImpl;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -17,8 +15,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import com.mightyjava.captcha.CaptchaGenerator;
-import com.mightyjava.captcha.CaptchaUtils;
 import com.mightyjava.model.Employee;
 import com.mightyjava.service.EmployeeService;
 
@@ -29,8 +25,8 @@ public class EmployeeController {
 
 	private String message;
 	private final EmployeeService employeeService;
-	private CaptchaValidator captchaValidator;
-	private CaptchaDetailService captchaDetailService;
+	private final CaptchaValidator captchaValidator;
+	private final CaptchaDetailService captchaDetailService;
 
 	@Autowired
 	public EmployeeController(EmployeeService employeeService, CaptchaValidator captchaValidator,
@@ -59,7 +55,7 @@ public class EmployeeController {
 			employeeService.add(employee);
 			return "redirect:/list";
 		} catch (CaptchaException ce) {
-			message = "Please verify captcha";
+			message = ce.getMessage();
 			return "redirect:/";
 		}
 	}
